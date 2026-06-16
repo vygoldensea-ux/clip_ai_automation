@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+*.log
+
+# Remotion cache / temp
+.cache/
+node_modules/.cache/
+
+# Local bulky generated renders can be added manually when needed
+outputs/**/*.mp4
+outputs/**/*.mov
+
+# OS metadata
+__MACOSX/
+.DS_Store
+Thumbs.db

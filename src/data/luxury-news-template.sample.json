@@ -1,0 +1,79 @@
+{
+  "id": "gold-market-demo",
+  "durationInFrames": 900,
+  "fps": 30,
+  "backgroundVariant": 2,
+  "audioSrc": "news-template-voice.wav",
+  "musicSrc": "news-template-bg.mp3",
+  "kicker": "MARKET UPDATE",
+  "source": "Cập nhật thị trường trong ngày",
+  "cta": "Theo dõi để cập nhật mỗi ngày",
+  "scenes": [
+    {
+      "kind": "hook",
+      "start": 0,
+      "duration": 180,
+      "title": "GIÁ VÀNG HÔM NAY",
+      "accent": "BIẾN ĐỘNG MẠNH",
+      "subtitle": "Nhà đầu tư cần chú ý vùng giá mới."
+    },
+    {
+      "kind": "explain",
+      "start": 180,
+      "duration": 210,
+      "title": "DÒNG TIỀN ĐANG DỊCH CHUYỂN",
+      "phrases": [
+        {
+          "start": 196,
+          "duration": 72,
+          "text": "Lực mua tăng lên",
+          "highlight": "lực mua"
+        },
+        {
+          "start": 258,
+          "duration": 78,
+          "text": "chênh lệch mua bán mở rộng",
+          "highlight": "chênh lệch"
+        },
+        {
+          "start": 322,
+          "duration": 58,
+          "text": "tâm lý phòng thủ rõ hơn",
+          "highlight": "phòng thủ"
+        }
+      ]
+    },
+    {
+      "kind": "data",
+      "start": 390,
+      "duration": 270,
+      "title": "3 ĐIỂM CẦN NHÌN",
+      "metrics": [
+        {
+          "label": "Giá ngày",
+          "value": "TĂNG",
+          "detail": "lực cầu ngắn hạn mạnh hơn"
+        },
+        {
+          "label": "Chênh lệch",
+          "value": "MỞ RỘNG",
+          "detail": "mua vào và bán ra tách xa"
+        },
+        {
+          "label": "Rủi ro",
+          "value": "CAO HƠN",
+          "detail": "không nên mua dưới cảm xúc"
+        }
+      ]
+    },
+    {
+      "kind": "cta",
+      "start": 660,
+      "duration": 240,
+      "title": "KẾT LUẬN NHANH",
+      "accent": "ĐI CHẬM, QUAN SÁT KỸ",
+      "subtitle": "Tin tức chỉ để tham khảo, không phải lời khuyên đầu tư."
+    }
+  ],
+  "voiceScript": "Giá vàng hôm nay, đang có biến động đáng chú ý.\nLực mua tăng lên, nhưng chênh lệch mua vào và bán ra, cũng đang mở rộng.\nĐiều này cho thấy, tâm lý phòng thủ của nhà đầu tư, rõ hơn rất nhiều.\nCó ba điểm cần nhìn.\nThứ nhất, giá trong ngày vẫn giữ xu hướng tăng.\nThứ hai, khoảng chênh lệch đang mở rộng, nên chi phí vào lệnh cao hơn.\nVà thứ ba, rủi ro ngắn hạn chưa hề thấp.\nKết luận nhanh: đi chậm, quan sát kỹ, và đừng mua chỉ vì cảm xúc.\nTheo dõi để cập nhật mỗi ngày!"
+}

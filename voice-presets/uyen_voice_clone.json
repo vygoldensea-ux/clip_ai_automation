@@ -1,0 +1,38 @@
+{
+  "voice_id": "voice-preview-test1-reference-20260617",
+  "display_name": "Voice Preview Test 1",
+  "description": "Fixed clone reference based on the user's approved voice_preview_test1.mp3 sample. Use this as the primary voice standard.",
+  "engine": "OmniVoice",
+  "repo": "https://github.com/k2-fsa/OmniVoice",
+  "model": "k2-fsa/OmniVoice",
+  "language": "vi",
+  "instruct": null,
+  "seed": 250610,
+  "sampling_rate": 24000,
+  "source_audio": "D:/Content Daily AI News/voice-presets/voice_preview_test1.mp3",
+  "source_analysis_audio": "D:/Content Daily AI News/voice-presets/voice-preview-test1-reference.wav",
+  "preferred_ref_audio": "D:/Content Daily AI News/voice-presets/voice-preview-test1-segments/voice-preview-test1-ref-00_60-07_60.wav",
+  "alternate_ref_audio": "D:/Content Daily AI News/voice-presets/voice-preview-test1-segments/voice-preview-test1-ref-08_50-16_00.wav",
+  "ref_text_file": "D:/Content Daily AI News/voice-presets/voice-preview-test1-ref-00_60-07_60-transcript.txt",
+  "generation": {
+    "num_step": 32,
+    "guidance_scale": 2.0,
+    "speed": 0.95,
+    "t_shift": 0.1,
+    "denoise": true,
+    "postprocess_output": false,
+    "preprocess_prompt": false,
+    "layer_penalty_factor": 5.0,
+    "position_temperature": 5.0,
+    "class_temperature": 0.0
+  },
+  "postprocess": {
+    "clean_output": true,
+    "keep_start_silence": 0.45,
+    "keep_end_silence": 0.3,
+    "max_internal_silence": 1.2,
+    "target_internal_silence": 0.55,
+    "soften_voice": true
+  },
+  "usage_note": "Send only finalVoiceScript verbatim. Use --no-instruct with the voice_preview_test1-derived reference audio and transcript. Do not use old clone files or Uyen.m4a as reference unless explicitly requested."
+}

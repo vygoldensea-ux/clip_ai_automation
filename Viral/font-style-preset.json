@@ -1,0 +1,19 @@
+{
+  "savedAt": "2026-06-17",
+  "activeFont": {
+    "id": "young-typeface",
+    "family": "BTC Young",
+    "sourceFolder": "D:/Content Daily AI News/Final Font/Young Typeface",
+    "publicFolder": "public/assets/fonts/young",
+    "files": [
+      "Young-Typeface.otf",
+      "Young-Typeface-Bold-Display.otf"
+    ],
+    "rule": "Use this one font family only for Vietnamese Remotion clips unless the user explicitly changes it."
+  },
+  "typographyNotes": {
+    "headline": "Use Bold Display, keep line-height at least 1.18 for Vietnamese diacritics.",
+    "body": "Use regular weight from the same family. Do not mix another font.",
+    "avoid": "Do not use Poppins, Plus Jakarta Sans, Manrope, Archivo, Newsreader, or Be Vietnam Pro in the same clip."
+  }
+}

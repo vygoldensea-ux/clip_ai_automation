@@ -1,0 +1,30 @@
+{
+  "savedAt": "2026-06-17",
+  "purpose": "Reusable Remotion background references from user-provided examples",
+  "presets": [
+    {
+      "id": "deep-blue-horizon",
+      "source": "User BG sample 1",
+      "description": "Minimal deep-blue space gradient with thin vertical center line, tiny distant subject, subtle star/line texture, orange horizon glow near bottom.",
+      "bestFor": ["hook", "big claim", "market headline", "premium intro"],
+      "palette": ["#061A56", "#008FE4", "#F06C31", "#FFFFFF"],
+      "textGuidance": "Use white or warm cream headlines; orange for key number; sparse uppercase labels."
+    },
+    {
+      "id": "blue-orange-sky-gradient",
+      "source": "User BG sample 2",
+      "description": "Clean vertical sky gradient: dark blue top, cyan middle, warm orange bottom. No heavy texture.",
+      "bestFor": ["transition", "summary", "data snapshot", "calmer mid-scene"],
+      "palette": ["#062744", "#2A8AB0", "#F6A24D", "#FFF7ED"],
+      "textGuidance": "Use strong dark or white text depending on local contrast; avoid low-saturation purple on cyan."
+    },
+    {
+      "id": "warm-pastel-signal",
+      "source": "User BG sample 3",
+      "description": "Bright warm pastel wash with yellow/orange center and soft cyan edge, suitable for optimistic CTA or conclusion.",
+      "bestFor": ["final CTA", "bullish scenario", "light insight", "soft outro"],
+      "palette": ["#FFFBE9", "#FFE78D", "#FF7B35", "#BCEEFF"],
+      "textGuidance": "Use navy/charcoal headlines, orange highlights, and avoid white body text."
+    }
+  ]
+}

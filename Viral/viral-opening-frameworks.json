@@ -1,0 +1,54 @@
+{
+  "savedAt": "2026-06-17",
+  "usageRule": "For future vertical clips, start with one of these opening/setup frameworks unless the user requests another style.",
+  "frameworks": [
+    {
+      "id": "cheat_sheet_overview",
+      "sourceImage": "z7894495000744_f20747323f1f90ae0b687ec102cd847d.jpg",
+      "bestFor": "Listicle, frameworks, multi-point educational clips",
+      "visualPattern": "Large title, neon grid, multiple mini cards, right-side use-case list, bottom quote"
+    },
+    {
+      "id": "hook_story_offer",
+      "sourceImage": "z7894495003328_5370b3daa794658202e9a8e805ab1ec7.jpg",
+      "bestFor": "TikTok/Reels scripting, retention-focused explainers",
+      "visualPattern": "Huge title, three-step panels, retention chart, hook examples"
+    },
+    {
+      "id": "bab_transformation",
+      "sourceImage": "z7894495004913_f9d18d6c691ac13f21ab05131d0d0408.jpg",
+      "bestFor": "Before/after stories, market reversal, transformation narratives",
+      "visualPattern": "Before and after blocks, bridge column, metric deltas"
+    },
+    {
+      "id": "formula_cards",
+      "sourceImage": "z7894494998382_d046b80ebc731900de039d50a7c5d63b.jpg",
+      "bestFor": "Overview of several models or choices",
+      "visualPattern": "Top headline, five center cards, horizontal selector rows"
+    },
+    {
+      "id": "aida_funnel",
+      "sourceImage": "z7894494998674_f30ed1f07aff5a08b210b82403db7596.jpg",
+      "bestFor": "Awareness-to-action explainers and conversion logic",
+      "visualPattern": "Large AIDA title, funnel stack, four detail panels"
+    },
+    {
+      "id": "storybrand_steps",
+      "sourceImage": "z7894494999117_80e5c2e21f9b94909fa9c76dd33f477a.jpg",
+      "bestFor": "Narrative explainers where audience is the hero",
+      "visualPattern": "Seven-step left rail, blue panels, hero-problem-guide structure"
+    },
+    {
+      "id": "pas_pressure_curve",
+      "sourceImage": "z7894495000008_7dafc91ddc2a9ea7969676d5cfc88689.jpg",
+      "bestFor": "News hooks, risk alerts, market updates, problem-solution clips",
+      "visualPattern": "PAS headline, tension curve, problem/agitate/solution cards"
+    },
+    {
+      "id": "market_update_brief",
+      "sourceImage": "derived",
+      "bestFor": "Daily finance/news updates like Bitcoin, gold, stocks",
+      "visualPattern": "Market label, big number hook, three signal cards, source footer, no progress bar"
+    }
+  ]
+}
