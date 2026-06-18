@@ -1,30 +1,70 @@
 {
-  "savedAt": "2026-06-17",
-  "purpose": "Reusable Remotion background references from user-provided examples",
+  "savedAt": "2026-06-18",
+  "purpose": "6 canned backgrounds cho Remotion clips. Import Background từ DesignSystem.tsx, truyền preset prop.",
+  "usage": "<Background preset=\"solar-flare\" grain drift />",
   "presets": [
     {
-      "id": "deep-blue-horizon",
-      "source": "User BG sample 1",
-      "description": "Minimal deep-blue space gradient with thin vertical center line, tiny distant subject, subtle star/line texture, orange horizon glow near bottom.",
-      "bestFor": ["hook", "big claim", "market headline", "premium intro"],
-      "palette": ["#061A56", "#008FE4", "#F06C31", "#FFFFFF"],
-      "textGuidance": "Use white or warm cream headlines; orange for key number; sparse uppercase labels."
+      "id": "midnight-ink",
+      "bestFor": ["big claim", "hook opener", "premium brand", "contrast statement"],
+      "mood": "Dark luxury, serious, premium",
+      "palette": { "primary": "#FFFFFF", "accent": "#38D9FF", "muted": "rgba(255,255,255,0.5)" },
+      "gradient": "linear-gradient(160deg, #0D0D1A → #1A0B3B → #0A0A18)",
+      "glow": "purple left + cyan right",
+      "notes": "Best cho mở đầu mạnh, tuyên bố lớn. Chữ trắng + cyan accent."
     },
     {
-      "id": "blue-orange-sky-gradient",
-      "source": "User BG sample 2",
-      "description": "Clean vertical sky gradient: dark blue top, cyan middle, warm orange bottom. No heavy texture.",
-      "bestFor": ["transition", "summary", "data snapshot", "calmer mid-scene"],
-      "palette": ["#062744", "#2A8AB0", "#F6A24D", "#FFF7ED"],
-      "textGuidance": "Use strong dark or white text depending on local contrast; avoid low-saturation purple on cyan."
+      "id": "electric-aurora",
+      "bestFor": ["viral hook", "energy opener", "disruptive claim", "trending topic"],
+      "mood": "High energy, viral, TikTok-native",
+      "palette": { "primary": "#FFFFFF", "accent": "#FF2D78", "muted": "rgba(255,255,255,0.5)" },
+      "gradient": "linear-gradient(180deg, #0D0020 → #3B0051 → #7B00A0 → #1A0060)",
+      "glow": "hot pink top + purple mid",
+      "notes": "Dùng khi cần năng lượng cao nhất. Tránh dùng quá nhiều — 1 scene per clip."
     },
     {
-      "id": "warm-pastel-signal",
-      "source": "User BG sample 3",
-      "description": "Bright warm pastel wash with yellow/orange center and soft cyan edge, suitable for optimistic CTA or conclusion.",
-      "bestFor": ["final CTA", "bullish scenario", "light insight", "soft outro"],
-      "palette": ["#FFFBE9", "#FFE78D", "#FF7B35", "#BCEEFF"],
-      "textGuidance": "Use navy/charcoal headlines, orange highlights, and avoid white body text."
+      "id": "solar-flare",
+      "bestFor": ["financial data", "GoldenSea brand", "cost comparison", "ROI numbers"],
+      "mood": "Premium, financial, GoldenSea signature",
+      "palette": { "primary": "#FFF7ED", "accent": "#F5A623", "muted": "rgba(255,247,237,0.55)" },
+      "gradient": "linear-gradient(180deg, #061A56 → #0A2A70 → #1A1205)",
+      "glow": "gold center burst + orange right",
+      "notes": "Background mặc định cho GoldenSea brand content và số liệu tài chính/outsourcing."
+    },
+    {
+      "id": "fresh-mint",
+      "bestFor": ["tips", "educational", "how-to", "clean framework"],
+      "mood": "Fresh, clean, trustworthy, editorial",
+      "palette": { "primary": "#0A1A14", "accent": "#00A87A", "muted": "rgba(10,26,20,0.5)" },
+      "gradient": "linear-gradient(160deg, #F0FFFA → #C8FFF0 → #E8FFF8)",
+      "glow": "mint center + cyan right",
+      "notes": "Light background — dùng chữ đen/dark green. Phù hợp cho tips, list, educational."
+    },
+    {
+      "id": "neon-night",
+      "bestFor": ["tech topic", "AI content", "dramatic reveal", "countdown"],
+      "mood": "Cyberpunk, tech, dramatic, high contrast",
+      "palette": { "primary": "#FFFFFF", "accent": "#B8FF57", "muted": "rgba(255,255,255,0.45)" },
+      "gradient": "linear-gradient(180deg, #000000 → #050510 → #000000)",
+      "glow": "cyan left + lime green right",
+      "notes": "Pure black base. Neon accents. Dùng cho AI/tech topics hoặc khi cần contrast cực cao."
+    },
+    {
+      "id": "warm-paper",
+      "bestFor": ["CTA", "outro", "story", "calm conclusion"],
+      "mood": "Warm, approachable, human, storytelling",
+      "palette": { "primary": "#2A1800", "accent": "#D4520A", "muted": "rgba(42,24,0,0.5)" },
+      "gradient": "linear-gradient(180deg, #FFF9F0 → #FFE8C0 → #FFCF80)",
+      "glow": "orange center + yellow warm",
+      "notes": "Light warm background — dùng chữ dark brown/charcoal. Phù hợp outro và CTA scenes."
     }
-  ]
+  ],
+  "openingFrameworks": {
+    "1_hook_statement": { "bg": "midnight-ink", "anim": "scaleIn", "note": "Big single claim, 3-5 words max" },
+    "2_data_reveal":    { "bg": "solar-flare",  "anim": "wipeReveal", "note": "Number first, context second" },
+    "3_before_after":   { "bg": "electric-aurora", "anim": "slideRight", "note": "Split screen or staggered rows" },
+    "4_list_tips":      { "bg": "fresh-mint",   "anim": "stagger+fadeUp", "note": "3-5 items, stagger 8 frames each" },
+    "5_tech_reveal":    { "bg": "neon-night",   "anim": "wipeReveal", "note": "High contrast, short punchy copy" },
+    "6_story_opener":   { "bg": "warm-paper",   "anim": "fadeUp", "note": "Personal, human, slow reveal" },
+    "7_brand_intro":    { "bg": "solar-flare",  "anim": "popIn+fadeUp", "note": "Logo/brand first, then claim" }
+  }
 }

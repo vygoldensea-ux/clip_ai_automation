@@ -1,156 +1,215 @@
 import React from 'react';
+import { AbsoluteFill, Audio, Img, interpolate, staticFile, useCurrentFrame } from 'remotion';
 import {
-  AbsoluteFill,
-  Audio,
-  Img,
-  interpolate,
-  staticFile,
-  useCurrentFrame,
-} from 'remotion';
+  Background, BrandTag, AccentLine, Pill, LiveDot,
+  C, FONT, anim, clamp, sec, inScene,
+} from './DesignSystem';
 
-const fps = 30;
-const duration = 40 * fps;
+const FPS = 30;
+const DURATION = 40 * FPS; // 1200 frames
 
-const ink = '#fff7ed';
-const softInk = '#f3eadf';
-const paper = '#17121c';
-const warmPaper = 'rgba(255,159,28,0.13)';
-const orange = '#ff9f1c';
-const purple = '#c084fc';
-const red = '#ef4444';
-const green = '#22c55e';
-const blue = '#38d9ff';
-const navy = '#102033';
-const line = 'rgba(255,255,255,0.085)';
-const font = '"BTC Young", serif';
+// ─── SCENE WINDOWS (seconds) ─────────────────────────────────────────────────
+// Hook:     0–7.5s   (0–225f)
+// Strategy: 7.5–17s  (225–510f)
+// Market:   17–26.5s (510–795f)
+// Levels:   26.5–36s (795–1080f)
+// CTA:      36–40s   (1080–1200f)
 
-const clamp = {extrapolateLeft: 'clamp' as const, extrapolateRight: 'clamp' as const};
-
-const fontFaceCss = `
-@font-face {
-  font-family: "BTC Young";
-  src: url("${staticFile('assets/fonts/young/Young-Typeface.otf')}") format("opentype");
-  font-weight: 400;
-}
-@font-face {
-  font-family: "BTC Young";
-  src: url("${staticFile('assets/fonts/young/Young-Typeface.otf')}") format("opentype");
-  font-weight: 500;
-}
-@font-face {
-  font-family: "BTC Young";
-  src: url("${staticFile('assets/fonts/young/Young-Typeface-Bold-Display.otf')}") format("opentype");
-  font-weight: 600;
-}
-@font-face {
-  font-family: "BTC Young";
-  src: url("${staticFile('assets/fonts/young/Young-Typeface-Bold-Display.otf')}") format("opentype");
-  font-weight: 700;
-}
-@font-face {
-  font-family: "BTC Young";
-  src: url("${staticFile('assets/fonts/young/Young-Typeface-Bold-Display.otf')}") format("opentype");
-  font-weight: 800;
-}
-@font-face {
-  font-family: "BTC Young";
-  src: url("${staticFile('assets/fonts/young/Young-Typeface-Bold-Display.otf')}") format("opentype");
-  font-weight: 900;
-}
-* { box-sizing: border-box; }
-`;
-
-const fadeScene = (frame: number, start: number, length: number) => {
-  const enter = interpolate(frame, [start, start + 14], [0, 1], clamp);
-  const exit = interpolate(frame, [start + length - 16, start + length], [1, 0], clamp);
+const fadeScene = (frame: number, startF: number, lengthF: number) => {
+  const enter = interpolate(frame, [startF, startF + 14], [0, 1], clamp);
+  const exit  = interpolate(frame, [startF + lengthF - 16, startF + lengthF], [1, 0], clamp);
   return Math.min(enter, exit);
 };
 
-const slideIn = (frame: number, start: number, distance = 28) =>
-  interpolate(frame, [start, start + 18], [distance, 0], clamp);
+// ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
 
-const ease = (frame: number, start: number, end: number, from: number, to: number) =>
-  interpolate(frame, [start, end], [from, to], clamp);
+const SceneLabel: React.FC<{ children: React.ReactNode; color?: string }> = ({
+  children, color = C.gold
+}) => (
+  <div style={{
+    fontFamily: FONT,
+    color,
+    fontSize: 28,
+    fontWeight: 800,
+    letterSpacing: 2.5,
+    textTransform: 'uppercase',
+  }}>
+    {children}
+  </div>
+);
 
-const Background: React.FC<{variant?: 'hero' | 'data' | 'chart'}> = ({variant = 'hero'}) => {
-  const frame = useCurrentFrame();
-  const drift = ease(frame, 0, duration, 0, -18);
-  const scale = ease(frame, 0, duration, 1, 1.018);
-  const isHero = variant === 'hero';
-  const isData = variant === 'data';
-  const tileRows = isChartBackground(variant) ? 6 : 5;
-  const bgGradient =
-    variant === 'hero'
-      ? 'linear-gradient(180deg, #061A56 0%, #008FE4 48%, #F06C31 100%)'
-      : variant === 'data'
-        ? 'linear-gradient(180deg, #062744 0%, #2A8AB0 45%, #F6A24D 100%)'
-        : 'radial-gradient(circle at 18% 70%, #FF7B35 0%, transparent 30%), radial-gradient(circle at 80% 74%, #BCEEFF 0%, transparent 28%), linear-gradient(180deg, #FFFBE9 0%, #FFE78D 42%, #FAD87D 100%)';
-
-  return (
-    <AbsoluteFill
-      style={{
-        background: bgGradient,
-        overflow: 'hidden',
-        fontFamily: font,
-      }}
-    >
-      <style>{fontFaceCss}</style>
-      <AbsoluteFill
-        style={{
-          transform: `translateY(${drift}px) scale(${scale})`,
-          backgroundImage:
-            variant === 'chart'
-              ? 'linear-gradient(90deg, rgba(35,32,24,0.065) 1px, transparent 1px), linear-gradient(rgba(35,32,24,0.04) 1px, transparent 1px)'
-              : `linear-gradient(90deg, rgba(255,255,255,0.13) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px)`,
-          backgroundSize: '116px 116px',
-          backgroundPosition: '72px 0',
-        }}
-      />
+/** Animated big headline — each line staggers in */
+const BigTitle: React.FC<{
+  lines: Array<{ text: string; color?: string }>;
+  frame: number;
+  start: number;
+  top?: number;
+  size?: number;
+}> = ({ lines, frame, start, top = 300, size = 116 }) => (
+  <div style={{ position: 'absolute', left: 60, right: 60, top, fontFamily: FONT }}>
+    {lines.map((line, i) => (
       <div
+        key={i}
         style={{
-          position: 'absolute',
-          inset: 0,
-          background:
-            variant === 'chart'
-              ? 'linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 38%, rgba(17,13,22,0.28) 100%)'
-              : 'linear-gradient(180deg, rgba(4,10,24,0.42) 0%, rgba(4,10,24,0.16) 42%, rgba(15,9,20,0.44) 100%)',
-        }}
-      />
-      {isHero ? (
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: 170,
-            width: 2,
-            height: 610,
-            background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.5), transparent)',
-            opacity: 0.55,
-          }}
-        />
-      ) : null}
-      <div
-        style={{
-          position: 'absolute',
-          left: isData ? 68 : 98,
-          right: isData ? 68 : 98,
-          bottom: isData ? 175 : 120,
-          height: isData ? 330 : 440,
-          opacity: variant === 'chart' ? 0.22 : isData ? 0.28 : 0.32,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gridAutoRows: 76,
-          gap: 10,
+          color: line.color ?? C.white,
+          fontSize: size,
+          fontWeight: 900,
+          lineHeight: 1.1,
+          letterSpacing: -1,
+          ...anim.fadeUp(frame, start + i * 10, 20),
         }}
       >
-        {Array.from({length: 7 * tileRows}).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              borderRadius: isData ? 12 : 16,
-              background: i % 4 === 0 ? 'rgba(255,255,255,0.26)' : 'rgba(255,255,255,0.1)',
-              boxShadow: '0 10px 34px rgba(0,0,0,0.12)',
-            }}
+        {line.text}
+      </div>
+    ))}
+  </div>
+);
+
+/** Data card row */
+const DataCard: React.FC<{
+  value: string;
+  label: string;
+  accent?: string;
+  frame: number;
+  start: number;
+  highlight?: boolean;
+}> = ({ value, label, accent = C.goldBright, frame, start, highlight = false }) => (
+  <div
+    style={{
+      borderRadius: 24,
+      padding: '24px 32px',
+      background: highlight ? `linear-gradient(135deg, ${accent}22, ${accent}0A)` : 'rgba(255,255,255,0.07)',
+      border: `1.5px solid ${highlight ? accent + '55' : 'rgba(255,255,255,0.1)'}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      fontFamily: FONT,
+      ...anim.slideRight(frame, start, 18),
+    }}
+  >
+    <div style={{ fontSize: 68, fontWeight: 900, color: accent, letterSpacing: -1 }}>{value}</div>
+    <div style={{ fontSize: 30, fontWeight: 700, color: 'rgba(255,255,255,0.65)', textAlign: 'right', maxWidth: 300, lineHeight: 1.3 }}>{label}</div>
+  </div>
+);
+
+// ─── SCENE 1 — HOOK ───────────────────────────────────────────────────────────
+// BG: midnight-ink (dark premium, cyan accent)
+// Anim: scaleIn for main title, fadeUp for sub
+const HookScene: React.FC = () => {
+  const frame = useCurrentFrame();
+  const opacity = fadeScene(frame, 0, 225);
+
+  const photoZoom = interpolate(frame, [60, 290], [1.02, 1.1], clamp);
+
+  return (
+    <AbsoluteFill style={{ opacity }}>
+      <Background preset="midnight-ink" grain drift />
+      <BrandTag />
+
+      {/* Live indicator */}
+      <div style={{ position: 'absolute', top: 78, right: 60, ...anim.fadeUp(frame, 5) }}>
+        <LiveDot color={C.pink} />
+      </div>
+
+      {/* Label */}
+      <div style={{ position: 'absolute', left: 60, top: 220, ...anim.fadeUp(frame, 8) }}>
+        <SceneLabel color={C.cyan}>Market Update</SceneLabel>
+        <AccentLine color={C.cyan} width={40} style={{ marginTop: 10 }} />
+      </div>
+
+      {/* Main title */}
+      <BigTitle
+        frame={frame} start={12} top={320} size={108}
+        lines={[
+          { text: 'BITCOIN' },
+          { text: 'VƯỢT', color: C.cyan },
+          { text: '67.000 USD', color: C.goldBright },
+        ]}
+      />
+
+      {/* Sub text */}
+      <div style={{
+        position: 'absolute', left: 60, right: 60, top: 750,
+        color: 'rgba(255,255,255,0.7)', fontSize: 46, fontWeight: 500,
+        lineHeight: 1.3, fontFamily: FONT,
+        ...anim.fadeUp(frame, 38, 22),
+      }}>
+        Nhưng tin nóng không có nghĩa là mua vội.
+      </div>
+
+      {/* Article photo */}
+      <div style={{
+        position: 'absolute', left: 60, top: 920, right: 60,
+        height: 460, borderRadius: 28, overflow: 'hidden',
+        border: '2px solid rgba(255,255,255,0.15)',
+        ...anim.fadeUp(frame, 55, 24),
+      }}>
+        <Img
+          src={staticFile('assets/btc-strategy-20260616/thanhnien-btc-eth-coins.jpg')}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${photoZoom})` }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(0,0,0,0.4), transparent 60%)' }} />
+      </div>
+
+      {/* Bottom pill */}
+      <div style={{
+        position: 'absolute', left: 60, bottom: 140,
+        ...anim.fadeUp(frame, 72, 18),
+      }}>
+        <Pill bg={C.goldBright} color={C.black}>Strategy vừa gom thêm 100 triệu USD Bitcoin</Pill>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+// ─── SCENE 2 — STRATEGY DATA ──────────────────────────────────────────────────
+// BG: solar-flare (GoldenSea brand, gold accent)
+// Anim: slideRight for data cards
+const StrategyScene: React.FC = () => {
+  const frame = useCurrentFrame();
+  const opacity = fadeScene(frame, 225, 285);
+
+  const items = [
+    { value: '1.587',    label: 'Bitcoin mua thêm',         accent: C.goldBright, hi: false },
+    { value: '100M USD', label: 'giá trị thương vụ',        accent: C.gold,       hi: true  },
+    { value: '846.842',  label: 'Bitcoin đang nắm giữ',     accent: C.cream,      hi: false },
+  ];
+
+  return (
+    <AbsoluteFill style={{ opacity }}>
+      <Background preset="solar-flare" grain drift />
+      <BrandTag />
+
+      <div style={{ position: 'absolute', left: 60, top: 200, ...anim.fadeUp(frame, 235) }}>
+        <SceneLabel color={C.goldBright}>New Position</SceneLabel>
+        <AccentLine color={C.goldBright} width={40} style={{ marginTop: 10 }} />
+      </div>
+
+      <BigTitle
+        frame={frame} start={240} top={300} size={104}
+        lines={[
+          { text: 'STRATEGY' },
+          { text: 'GOM THÊM', color: C.cream },
+          { text: 'BITCOIN', color: C.goldBright },
+        ]}
+      />
+
+      <div style={{
+        position: 'absolute', left: 60, right: 60, top: 730,
+        color: 'rgba(255,247,237,0.65)', fontSize: 42, lineHeight: 1.3,
+        fontWeight: 500, fontFamily: FONT,
+        ...anim.fadeUp(frame, 260, 20),
+      }}>
+        Một thương vụ đủ lớn để thị trường phải nhìn lại dòng tiền tổ chức.
+      </div>
+
+      <div style={{ position: 'absolute', left: 60, right: 60, top: 980, display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {items.map((item, i) => (
+          <DataCard
+            key={item.value}
+            {...item}
+            frame={frame}
+            start={anim.stagger(i, 330, 20)}
           />
         ))}
       </div>
@@ -158,462 +217,226 @@ const Background: React.FC<{variant?: 'hero' | 'data' | 'chart'}> = ({variant = 
   );
 };
 
-const isChartBackground = (variant: 'hero' | 'data' | 'chart') => variant === 'chart';
-
-const Label: React.FC<{children: React.ReactNode; color?: string}> = ({children, color = purple}) => (
-  <div
-    style={{
-      color,
-      fontSize: 34,
-      lineHeight: 1.28,
-      fontWeight: 800,
-      letterSpacing: 1.4,
-      textTransform: 'uppercase',
-      textShadow: '0 0 18px rgba(0,0,0,0.36)',
-    }}
-  >
-    {children}
-  </div>
-);
-
-const Pill: React.FC<{children: React.ReactNode; color?: string}> = ({children, color = purple}) => (
-  <div
-    style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 999,
-      padding: '13px 26px',
-      color,
-      background: 'rgba(22,17,28,0.92)',
-      border: `1px solid ${color}55`,
-      boxShadow: `0 12px 36px rgba(0,0,0,0.28), 0 0 24px ${color}22`,
-      fontWeight: 900,
-      fontSize: 29,
-    }}
-  >
-    {children}
-  </div>
-);
-
-const ArticlePhoto: React.FC<{frame: number; start: number}> = ({frame, start}) => {
-  const zoom = ease(frame, start, start + 230, 1.02, 1.1);
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: 90,
-        top: 940,
-        width: 900,
-        height: 480,
-        borderRadius: 34,
-        overflow: 'hidden',
-        boxShadow: '0 28px 84px rgba(0,0,0,0.18)',
-        border: '8px solid rgba(255,255,255,0.72)',
-      }}
-    >
-      <Img
-        src={staticFile('assets/btc-strategy-20260616/thanhnien-btc-eth-coins.jpg')}
-        style={{width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${zoom})`}}
-      />
-      <div style={{position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(0,0,0,0.22), transparent 60%)'}} />
-    </div>
-  );
-};
-
-const BigTitle: React.FC<{
-  lines: Array<{text: string; color?: string}>;
-  top?: number;
-  size?: number;
-  frame: number;
-  start: number;
-}> = ({lines, top = 250, size = 124, frame, start}) => {
-  return (
-    <div style={{position: 'absolute', left: 104, right: 82, top}}>
-      {lines.map((lineItem, i) => (
-        <div
-          key={lineItem.text}
-          style={{
-            color: lineItem.color ?? ink,
-            fontSize: size,
-            fontWeight: 900,
-            lineHeight: 1.2,
-            letterSpacing: -0.8,
-            textShadow: '0 12px 34px rgba(0,0,0,0.32)',
-            transform: `translateY(${slideIn(frame, start + i * 8)}px)`,
-            opacity: ease(frame, start + i * 8, start + 20 + i * 8, 0, 1),
-          }}
-        >
-          {lineItem.text}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const HookScene: React.FC = () => {
-  const frame = useCurrentFrame();
-  const opacity = fadeScene(frame, 0, 225);
-  return (
-    <AbsoluteFill style={{opacity}}>
-      <Background variant="hero" />
-      <div style={{position: 'absolute', left: 104, top: 220}}>
-        <Label>Market update</Label>
-      </div>
-      <BigTitle
-        frame={frame}
-        start={10}
-        top={335}
-        size={116}
-        lines={[
-          {text: 'BITCOIN'},
-          {text: 'VƯỢT', color: purple},
-          {text: '67.000 USD', color: orange},
-        ]}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 110,
-          top: 800,
-          width: 700,
-          color: softInk,
-          fontSize: 50,
-          fontWeight: 500,
-          lineHeight: 1.08,
-          transform: `translateY(${slideIn(frame, 42)}px)`,
-          opacity: ease(frame, 42, 64, 0, 1),
-        }}
-      >
-        Nhưng tin nóng không có nghĩa là mua vội.
-      </div>
-      <ArticlePhoto frame={frame} start={60} />
-      <div style={{position: 'absolute', left: 108, top: 1440}}>
-        <Pill color={orange}>Strategy vừa gom thêm 100 triệu đô la Bitcoin</Pill>
-      </div>
-      <div style={{position: 'absolute', left: 108, bottom: 160}}>
-        <Pill color={purple}>Quan sát vùng giá trước khi hành động</Pill>
-      </div>
-    </AbsoluteFill>
-  );
-};
-
-const StrategyScene: React.FC = () => {
-  const frame = useCurrentFrame();
-  const opacity = fadeScene(frame, 225, 285);
-  const items = [
-    ['1.587', 'Bitcoin mua thêm', orange],
-    ['100M USD', 'giá trị thương vụ', purple],
-    ['846.842', 'Bitcoin đang nắm giữ', ink],
-  ] as const;
-
-  return (
-    <AbsoluteFill style={{opacity}}>
-      <Background variant="data" />
-      <div style={{position: 'absolute', left: 104, top: 200}}>
-        <Label color={orange}>New post</Label>
-      </div>
-      <BigTitle
-        frame={frame}
-        start={245}
-        top={300}
-        size={106}
-        lines={[
-          {text: 'STRATEGY'},
-          {text: 'GOM THÊM', color: ink},
-          {text: 'BITCOIN', color: purple},
-        ]}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 104,
-          top: 735,
-          width: 760,
-          color: softInk,
-          fontSize: 45,
-          lineHeight: 1.18,
-          fontWeight: 500,
-        }}
-      >
-        Một thương vụ đủ lớn để thị trường phải nhìn lại dòng tiền tổ chức.
-      </div>
-      <div style={{position: 'absolute', left: 82, right: 82, top: 1010, display: 'grid', gap: 24}}>
-        {items.map(([value, label, color], i) => (
-          <div
-            key={value}
-            style={{
-              height: 164,
-              borderRadius: 28,
-              padding: '26px 34px',
-              background: i === 1 ? warmPaper : 'rgba(255,255,255,0.09)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              boxShadow: '0 20px 58px rgba(0,0,0,0.28)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              opacity: ease(frame, 335 + i * 18, 360 + i * 18, 0, 1),
-              transform: `translateY(${slideIn(frame, 335 + i * 18, 36)}px)`,
-            }}
-          >
-            <div style={{color, fontSize: 76, fontWeight: 900, letterSpacing: -1}}>{value}</div>
-            <div style={{color: softInk, fontSize: 33, fontWeight: 800, textAlign: 'right', maxWidth: 320}}>{label}</div>
-          </div>
-        ))}
-      </div>
-    </AbsoluteFill>
-  );
-};
-
+// ─── SCENE 3 — MARKET SNAPSHOT ────────────────────────────────────────────────
+// BG: neon-night (tech, high contrast, cyan/lime bars)
+// Anim: wipeReveal for title, stagger bars
 const MarketScene: React.FC = () => {
   const frame = useCurrentFrame();
   const opacity = fadeScene(frame, 510, 285);
-  const data = [
-    ['BTC', '+1,03%', orange, 0.62],
-    ['ETH', '+4,3%', blue, 0.78],
-    ['SOL', '+4,05%', green, 0.76],
-    ['HYPE', '+5,71%', purple, 0.9],
-  ] as const;
+
+  const coins = [
+    { name: 'BTC',  pct: '+1.03%', color: C.goldBright, width: 0.62 },
+    { name: 'ETH',  pct: '+4.3%',  color: C.cyan,        width: 0.78 },
+    { name: 'SOL',  pct: '+4.05%', color: C.lime,        width: 0.76 },
+    { name: 'HYPE', pct: '+5.71%', color: C.pink,        width: 0.92 },
+  ];
 
   return (
-    <AbsoluteFill style={{opacity}}>
-      <Background variant="data" />
-      <div style={{position: 'absolute', left: 104, top: 190}}>
-        <Label color={purple}>Crypto snapshot</Label>
+    <AbsoluteFill style={{ opacity }}>
+      <Background preset="neon-night" grain grid drift />
+      <BrandTag label="GOLDENSEA" />
+
+      <div style={{ position: 'absolute', left: 60, top: 200, ...anim.fadeUp(frame, 520) }}>
+        <SceneLabel color={C.lime}>Crypto Snapshot</SceneLabel>
+        <AccentLine color={C.lime} width={40} style={{ marginTop: 10 }} />
       </div>
-      <BigTitle
-        frame={frame}
-        start={525}
-        top={285}
-        size={96}
-        lines={[
-          {text: 'THỊ TRƯỜNG'},
-          {text: 'ĐANG HỒI', color: purple},
-          {text: 'TRỞ LẠI', color: ink},
-        ]}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 82,
-          right: 82,
-          top: 780,
-          borderRadius: 34,
-          padding: '34px 34px 18px',
-          background: 'rgba(255,255,255,0.1)',
-          border: '1px solid rgba(255,255,255,0.14)',
-          boxShadow: '0 24px 70px rgba(0,0,0,0.3)',
-        }}
-      >
-        {data.map(([name, value, color, width], i) => {
-          const grow = ease(frame, 585 + i * 16, 645 + i * 16, 0, width);
+
+      <div style={{
+        position: 'absolute', left: 60, right: 60, top: 300, fontFamily: FONT,
+        ...anim.wipeReveal(frame, 528, 22),
+      }}>
+        <div style={{ fontSize: 96, fontWeight: 900, color: C.white, lineHeight: 1.1 }}>THỊ TRƯỜNG</div>
+        <div style={{ fontSize: 96, fontWeight: 900, color: C.cyan, lineHeight: 1.1 }}>ĐANG HỒI</div>
+        <div style={{ fontSize: 96, fontWeight: 900, color: C.white, lineHeight: 1.1 }}>TRỞ LẠI</div>
+      </div>
+
+      {/* Bar chart */}
+      <div style={{
+        position: 'absolute', left: 60, right: 60, top: 760,
+        background: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: 28, padding: '28px 28px 10px',
+      }}>
+        {coins.map((coin, i) => {
+          const barW = interpolate(frame, [anim.stagger(i, 580, 16), anim.stagger(i, 580, 16) + 30], [0, coin.width], clamp);
           return (
-            <div key={name} style={{marginBottom: 40}}>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline'}}>
-                <div style={{color: ink, fontSize: 54, fontWeight: 900}}>{name}</div>
-                <div style={{color, fontSize: 48, fontWeight: 900}}>{value}</div>
+            <div key={coin.name} style={{ marginBottom: 34, fontFamily: FONT }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <span style={{ fontSize: 48, fontWeight: 900, color: C.white }}>{coin.name}</span>
+                <span style={{ fontSize: 44, fontWeight: 900, color: coin.color }}>{coin.pct}</span>
               </div>
-              <div style={{height: 20, borderRadius: 999, background: 'rgba(255,255,255,0.18)', overflow: 'hidden', marginTop: 14}}>
-                <div
-                  style={{
-                    height: '100%',
-                    width: `${grow * 100}%`,
-                    borderRadius: 999,
-                    background: color,
-                    boxShadow: `0 0 28px ${color}`,
-                  }}
-                />
+              <div style={{ height: 16, borderRadius: 999, background: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%', width: `${barW * 100}%`,
+                  background: coin.color,
+                  borderRadius: 999,
+                  boxShadow: `0 0 20px ${coin.color}99`,
+                }} />
               </div>
             </div>
           );
         })}
       </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 104,
-          right: 104,
-          bottom: 165,
-          color: softInk,
-          fontSize: 43,
-          lineHeight: 1.18,
-          fontWeight: 500,
-        }}
-      >
+
+      <div style={{
+        position: 'absolute', left: 60, right: 60, bottom: 130,
+        color: 'rgba(255,255,255,0.55)', fontSize: 40, lineHeight: 1.3,
+        fontWeight: 500, fontFamily: FONT,
+        ...anim.fadeUp(frame, 650, 20),
+      }}>
         Một phiên hồi phục tốt. Nhưng vẫn cần xác nhận, không chỉ cảm xúc.
       </div>
     </AbsoluteFill>
   );
 };
 
+// ─── SCENE 4 — PRICE LEVELS ───────────────────────────────────────────────────
+// BG: electric-aurora (high energy, dramatic chart reveal)
+// Anim: wipeReveal chart line draw
 const LevelsScene: React.FC = () => {
   const frame = useCurrentFrame();
   const opacity = fadeScene(frame, 795, 285);
-  const draw = ease(frame, 835, 1035, 0, 1);
-  const points = [
-    ['60K-65K', 'hỗ trợ', red, 0.13, 420],
-    ['74.5K', 'xác nhận', orange, 0.46, 300],
-    ['82K', 'mục tiêu', purple, 0.7, 215],
-    ['100K', 'kịch bản mạnh', green, 0.93, 105],
-  ] as const;
+  const draw = interpolate(frame, [835, 1050], [0, 1], clamp);
+
+  const points: Array<{ price: string; label: string; color: string; pct: number; y: number }> = [
+    { price: '60K–65K', label: 'hỗ trợ',       color: C.coral,      pct: 0.13, y: 420 },
+    { price: '74.5K',   label: 'xác nhận',      color: C.goldBright, pct: 0.46, y: 300 },
+    { price: '82K',     label: 'mục tiêu',      color: C.cyan,       pct: 0.70, y: 215 },
+    { price: '100K',    label: 'kịch bản mạnh', color: C.lime,       pct: 0.93, y: 105 },
+  ];
 
   return (
-    <AbsoluteFill style={{opacity}}>
-      <Background variant="chart" />
-      <div style={{position: 'absolute', left: 104, top: 190}}>
-        <Label color={orange}>Before you buy</Label>
+    <AbsoluteFill style={{ opacity }}>
+      <Background preset="electric-aurora" grain drift />
+      <BrandTag />
+
+      <div style={{ position: 'absolute', left: 60, top: 200, ...anim.fadeUp(frame, 805) }}>
+        <SceneLabel color={C.pink}>Before You Buy</SceneLabel>
+        <AccentLine color={C.pink} width={40} style={{ marginTop: 10 }} />
       </div>
+
       <BigTitle
-        frame={frame}
-        start={815}
-        top={285}
-        size={104}
+        frame={frame} start={810} top={295} size={100}
         lines={[
-          {text: 'BẢN ĐỒ', color: navy},
-          {text: 'GIÁ BTC', color: orange},
+          { text: 'BẢN ĐỒ', color: C.white },
+          { text: 'GIÁ BTC', color: C.goldBright },
         ]}
       />
-      <div
-        style={{
-          position: 'absolute',
-          left: 82,
-          right: 82,
-          top: 625,
-          height: 710,
-          borderRadius: 34,
-          padding: 38,
-          background: 'rgba(255,255,255,0.1)',
-          border: '1px solid rgba(255,255,255,0.14)',
-          boxShadow: '0 24px 70px rgba(0,0,0,0.3)',
-        }}
-      >
-        <svg width="900" height="495" viewBox="0 0 900 495">
-          <line x1="58" y1="425" x2="842" y2="425" stroke="rgba(255,255,255,0.24)" strokeWidth="4" />
+
+      {/* Chart card */}
+      <div style={{
+        position: 'absolute', left: 60, right: 60, top: 620,
+        background: 'rgba(0,0,0,0.35)',
+        border: '1px solid rgba(255,255,255,0.12)',
+        borderRadius: 28, padding: 32,
+        ...anim.fadeUp(frame, 825, 18),
+      }}>
+        <svg width="900" height="460" viewBox="0 0 900 460" style={{ display: 'block' }}>
+          <line x1="40" y1="400" x2="860" y2="400" stroke="rgba(255,255,255,0.2)" strokeWidth="3" />
           <path
-            d="M70 395 C 185 385, 230 330, 334 320 C 450 305, 500 220, 610 205 C 735 188, 780 94, 840 62"
+            d="M55 375 C 170 360, 220 300, 330 288 C 445 272, 498 195, 612 178 C 730 160, 775 75, 845 45"
             fill="none"
-            stroke={orange}
-            strokeWidth="11"
+            stroke={C.goldBright}
+            strokeWidth="10"
             strokeLinecap="round"
-            strokeDasharray="1120"
-            strokeDashoffset={1120 - draw * 1120}
-            style={{filter: 'drop-shadow(0 0 14px rgba(247,147,26,0.55))'}}
+            strokeDasharray="1200"
+            strokeDashoffset={1200 - draw * 1200}
+            style={{ filter: `drop-shadow(0 0 12px ${C.goldBright}99)` }}
           />
-          {points.map(([price, label, color, pct, y], i) => {
-            const x = 70 + pct * 770;
-            const visible = ease(draw, pct - 0.08, pct, 0, 1);
-            const yy = y - 75;
+          {points.map((p) => {
+            const x = 55 + p.pct * 790;
+            const yy = p.y - 60;
+            const vis = interpolate(draw, [p.pct - 0.06, p.pct + 0.04], [0, 1], clamp);
             return (
-              <g key={price} opacity={visible}>
-                <circle cx={x} cy={yy} r="16" fill={color} />
-                <text x={x - 58} y={yy - 34} fill={color} fontSize="36" fontWeight="900">
-                  {price}
-                </text>
-                <text x={x - 62} y={yy + 56} fill={softInk} fontSize="26" fontWeight="800">
-                  {label}
-                </text>
+              <g key={p.price} opacity={vis}>
+                <circle cx={x} cy={yy} r={14} fill={p.color} style={{ filter: `drop-shadow(0 0 8px ${p.color})` }} />
+                <text x={x - 52} y={yy - 28} fill={p.color} fontSize={32} fontWeight={900}>{p.price}</text>
+                <text x={x - 55} y={yy + 48} fill="rgba(255,255,255,0.55)" fontSize={22} fontWeight={700}>{p.label}</text>
               </g>
             );
           })}
         </svg>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 16,
-            marginTop: 8,
-          }}
-        >
-          {points.map(([price, label, color], i) => (
-            <div
-              key={`${price}-chip`}
-              style={{
-                minHeight: 72,
-                borderRadius: 18,
-                padding: '14px 18px',
-                background: i === 0 ? 'rgba(239,68,68,0.25)' : 'rgba(16,32,51,0.12)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color,
-                fontSize: 28,
-                fontWeight: 900,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <span>{price}</span>
-              <span style={{color: navy, fontSize: 22, fontWeight: 800}}>{label}</span>
+
+        {/* Grid chips */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 14 }}>
+          {points.map((p) => (
+            <div key={p.price + '-chip'} style={{
+              padding: '14px 18px', borderRadius: 14, fontFamily: FONT,
+              background: `${p.color}18`,
+              border: `1px solid ${p.color}44`,
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <span style={{ color: p.color, fontSize: 28, fontWeight: 900 }}>{p.price}</span>
+              <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 22, fontWeight: 700 }}>{p.label}</span>
             </div>
           ))}
         </div>
       </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 104,
-          right: 104,
-          bottom: 165,
-          color: navy,
-          fontSize: 47,
-          lineHeight: 1.18,
-          fontWeight: 900,
-          letterSpacing: -1.2,
-        }}
-      >
-        Hỗ trợ là vùng cần giữ. 74.500 đô la là vùng cần lấy lại.
+
+      <div style={{
+        position: 'absolute', left: 60, right: 60, bottom: 120,
+        color: C.white, fontSize: 44, fontWeight: 900, lineHeight: 1.25,
+        fontFamily: FONT, letterSpacing: -0.5,
+        ...anim.fadeUp(frame, 1020, 18),
+      }}>
+        Hỗ trợ là vùng cần giữ. 74.500 đô là vùng cần lấy lại.
       </div>
     </AbsoluteFill>
   );
 };
 
+// ─── SCENE 5 — CTA ────────────────────────────────────────────────────────────
+// BG: warm-paper (calm, human, outro)
+// Anim: fadeUp
 const CtaScene: React.FC = () => {
   const frame = useCurrentFrame();
   const opacity = fadeScene(frame, 1080, 120);
+
   return (
-    <AbsoluteFill style={{opacity}}>
-      <Background variant="chart" />
-      <div style={{position: 'absolute', left: 104, top: 235}}>
-        <Label color={purple}>Kết luận nhanh</Label>
+    <AbsoluteFill style={{ opacity }}>
+      <Background preset="warm-paper" grain drift />
+      <BrandTag label="GOLDENSEA" />
+
+      <div style={{ position: 'absolute', left: 60, top: 220, ...anim.fadeUp(frame, 1090) }}>
+        <SceneLabel color="#D4520A">Kết Luận Nhanh</SceneLabel>
+        <AccentLine color="#D4520A" width={40} style={{ marginTop: 10 }} />
       </div>
+
       <BigTitle
-        frame={frame}
-        start={1095}
-        top={360}
-        size={98}
+        frame={frame} start={1096} top={330} size={96}
         lines={[
-          {text: 'DÒNG TIỀN LỚN', color: navy},
-          {text: 'ĐANG QUAY', color: purple},
-          {text: 'TRỞ LẠI', color: orange},
+          { text: 'DÒNG TIỀN LỚN', color: '#2A1800' },
+          { text: 'ĐANG QUAY',     color: '#D4520A'  },
+          { text: 'TRỞ LẠI',       color: '#2A1800'  },
         ]}
       />
-      <div
-        style={{
-          position: 'absolute',
-          left: 104,
-          right: 160,
-          top: 890,
-          color: navy,
-          fontSize: 52,
-          fontWeight: 500,
-          lineHeight: 1.18,
-        }}
-      >
+
+      <div style={{
+        position: 'absolute', left: 60, right: 60, top: 860,
+        color: 'rgba(42,24,0,0.6)', fontSize: 48, fontWeight: 500,
+        lineHeight: 1.3, fontFamily: FONT,
+        ...anim.fadeUp(frame, 1112, 20),
+      }}>
         Đi chậm. Quan sát kỹ. Quản trị rủi ro.
       </div>
-      <div style={{position: 'absolute', left: 104, bottom: 165}}>
-        <Pill color={orange}>Lưu lại nếu bạn đang theo dõi Bitcoin</Pill>
+
+      <div style={{
+        position: 'absolute', left: 60, bottom: 130,
+        ...anim.popIn(frame, 1130),
+      }}>
+        <Pill bg="#D4520A" color={C.white}>Lưu lại nếu bạn đang theo dõi Bitcoin</Pill>
       </div>
     </AbsoluteFill>
   );
 };
 
+// ─── AUDIO ────────────────────────────────────────────────────────────────────
 const AudioBed: React.FC = () => {
   const frame = useCurrentFrame();
   const musicVol = Math.min(
     interpolate(frame, [0, 18], [0, 0.1], clamp),
-    interpolate(frame, [duration - fps * 5, duration], [0.1, 0.03], clamp)
+    interpolate(frame, [DURATION - FPS * 5, DURATION], [0.1, 0.03], clamp)
   );
-
   return (
     <>
       <Audio src={staticFile('btc-strategy-voice.wav')} volume={1} />
@@ -622,15 +445,14 @@ const AudioBed: React.FC = () => {
   );
 };
 
-export const BTCStrategyUpdate: React.FC = () => {
-  return (
-    <AbsoluteFill style={{backgroundColor: paper, fontFamily: font}}>
-      <HookScene />
-      <StrategyScene />
-      <MarketScene />
-      <LevelsScene />
-      <CtaScene />
-      <AudioBed />
-    </AbsoluteFill>
-  );
-};
+// ─── ROOT EXPORT ─────────────────────────────────────────────────────────────
+export const BTCStrategyUpdate: React.FC = () => (
+  <AbsoluteFill style={{ backgroundColor: C.midnight, fontFamily: FONT }}>
+    <HookScene />
+    <StrategyScene />
+    <MarketScene />
+    <LevelsScene />
+    <CtaScene />
+    <AudioBed />
+  </AbsoluteFill>
+);
