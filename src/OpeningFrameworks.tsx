@@ -290,13 +290,13 @@ export const BABTransformationOpening: React.FC<{
           {metrics.map((m, i) => (
             <div key={i} style={{
               flex: 1,
-              background: 'rgba(255,255,255,0.06)', borderRadius: 18, padding: '24px 22px',
-              fontFamily: FONT,
+              background: 'rgba(255,255,255,0.07)', borderRadius: 22, padding: '30px 24px',
+              fontFamily: '"Be Vietnam Pro", sans-serif',
               display: 'flex', flexDirection: 'column', justifyContent: 'center',
               ...anim.fadeUp(frame, anim.stagger(i, startFrame + 60, 12)),
             }}>
-              <div style={{ fontSize: 48, fontWeight: 900, color: m.positive !== false ? C.neonLime : C.coral, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{m.delta}</div>
-              <div style={{ fontSize: 24, color: 'rgba(255,255,255,0.55)', marginTop: 6, fontFamily: '"Be Vietnam Pro", sans-serif', lineHeight: 1.3 }}>{m.label}</div>
+              <div style={{ fontSize: 56, fontWeight: 900, color: m.positive !== false ? C.neonLime : C.coral }}>{m.delta}</div>
+              <div style={{ fontSize: 28, color: 'rgba(255,255,255,0.6)', marginTop: 8, lineHeight: 1.35 }}>{m.label}</div>
             </div>
           ))}
         </div>
@@ -357,19 +357,18 @@ export const FormulaCardsOpening: React.FC<{
         bottom: 80,
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {cards.slice(0, 5).map((card, i) => {
             const acc = card.accent || accents[i % accents.length];
             return (
               <div key={i} style={{
-                borderRadius: 20, padding: '22px 26px',
-                background: `${acc}18`, border: `2px solid ${acc}44`,
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                fontFamily: FONT, flex: 1,
+                borderRadius: 24, padding: '28px 32px',
+                background: `${acc}1A`, border: `2.5px solid ${acc}55`,
+                fontFamily: '"Be Vietnam Pro", sans-serif',
                 ...anim.slideRight(frame, anim.stagger(i, startFrame + 30, 10)),
               }}>
-                <div style={{ fontSize: 34, fontWeight: 900, color: C.cream, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{card.title}</div>
-                <div style={{ fontSize: 24, color: acc, fontWeight: 700, maxWidth: 380, textAlign: 'right', fontFamily: '"Be Vietnam Pro", sans-serif' }}>{card.tagline}</div>
+                <div style={{ fontSize: 44, fontWeight: 900, color: C.cream, lineHeight: 1.15, marginBottom: 8 }}>{card.title}</div>
+                <div style={{ fontSize: 30, color: acc, fontWeight: 700, lineHeight: 1.3 }}>{card.tagline}</div>
               </div>
             );
           })}
@@ -620,13 +619,13 @@ export const PASPressureOpening: React.FC<{
       }}>
         {cards.map((card, i) => (
           <div key={i} style={{
-            borderRadius: 20, padding: '26px 26px',
-            background: card.bg, border: `2px solid ${card.color}44`,
-            fontFamily: FONT,
+            borderRadius: 24, padding: '32px 30px',
+            background: card.bg, border: `2.5px solid ${card.color}55`,
+            fontFamily: '"Be Vietnam Pro", sans-serif',
             ...anim.slideRight(frame, anim.stagger(i, startFrame + 35, 14)),
           }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: card.color, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>{card.label}</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: C.white, lineHeight: 1.35, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{card.text}</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: card.color, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12 }}>{card.label}</div>
+            <div style={{ fontSize: 38, fontWeight: 700, color: C.white, lineHeight: 1.4 }}>{card.text}</div>
           </div>
         ))}
       </div>
