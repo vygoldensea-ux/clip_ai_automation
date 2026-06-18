@@ -12,20 +12,22 @@ export const clamp = {
 };
 
 // ─── FONT ────────────────────────────────────────────────────────────────────
+import { staticFile } from 'remotion';
+
 export const fontFaceCss = `
 @font-face {
   font-family: "Young";
-  src: url("/assets/fonts/young/Young-Typeface.otf") format("opentype");
+  src: url("${staticFile('assets/fonts/young/Young-Typeface.otf')}") format("opentype");
   font-weight: 400;
 }
 @font-face {
   font-family: "Young";
-  src: url("/assets/fonts/young/Young-Typeface-Bold-Display.otf") format("opentype");
+  src: url("${staticFile('assets/fonts/young/Young-Typeface-Bold-Display.otf')}") format("opentype");
   font-weight: 700;
 }
 @font-face {
   font-family: "Young";
-  src: url("/assets/fonts/young/Young-Typeface-Bold-Display.otf") format("opentype");
+  src: url("${staticFile('assets/fonts/young/Young-Typeface-Bold-Display.otf')}") format("opentype");
   font-weight: 900;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
