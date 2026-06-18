@@ -4,6 +4,7 @@ import {VerticalAINews} from './VerticalAINews';
 import {BitcoinNews} from './BitcoinNews';
 import {LuxuryNewsTemplate} from './LuxuryNewsTemplate';
 import {BTCStrategyUpdate} from './BTCStrategyUpdate';
+import {GoldNewsClip} from './GoldNewsClip';
 
 export const Root: React.FC = () => {
   return (
@@ -35,6 +36,14 @@ export const Root: React.FC = () => {
       <Composition
         id="BTCStrategyUpdate"
         component={BTCStrategyUpdate}
+        durationInFrames={1200}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="GoldNewsClip"
+        component={GoldNewsClip}
         durationInFrames={1200}
         fps={30}
         width={1080}
