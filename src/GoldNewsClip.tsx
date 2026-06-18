@@ -133,19 +133,9 @@ export const GoldNewsClip: React.FC = () => {
         loop
       />
 
-      {/* Voice — using btc-strategy-voice.wav as placeholder until gold-news-voice.wav is generated */}
-      {/* Generate gold-news-voice.wav via OmniVoice seed 250610 with emotional script below, then swap */}
-      {/* VOICE SCRIPT (nhấn nhá, cảm xúc):
-          [0–7s]   "Vàng... vừa giảm 57 đô — chỉ trong 48 TIẾNG. Tất cả, vì một câu nói."
-          [7–17s]  "Powell tuyên bố: chưa — đủ — bằng chứng lạm phát giảm.
-                    USD mạnh lên tức thì. Dòng tiền rút khỏi vàng. SJC mất 300 nghìn. Nhẫn mất 200 nghìn."
-          [17–27s] "Ngày 15 tháng 6 — vàng đứng ở 3.342 đô.
-                    Chỉ 48 giờ sau Fed phát biểu — còn 3.285. Mất 57 đô."
-          [27–36s] "Giá vàng phụ thuộc 4 yếu tố: Fed. Đô la Mỹ. Lạm phát. Địa chính trị.
-                    Ngắn hạn — áp lực. Dài hạn — vàng vẫn là kênh trú ẩn."
-          [36–40s] "Lưu lại nếu bạn đang theo dõi vàng. Gặp lại ở video sau."
-      */}
-      <Audio src={staticFile('btc-strategy-voice.wav')} />
+      {/* Voice — macOS Linh (vi_VN), generated to match clip timing */}
+      {/* To upgrade: replace gold-news-voice.wav with OmniVoice seed 250610 render */}
+      <Audio src={staticFile('gold-news-voice.wav')} volume={1} />
 
       {/* Scene 1 — HookStoryOffer: viral opener, framework #2 */}
       <HookStoryOfferOpening
