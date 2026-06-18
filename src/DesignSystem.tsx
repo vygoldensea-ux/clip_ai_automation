@@ -15,6 +15,7 @@ export const clamp = {
 import { staticFile } from 'remotion';
 
 export const fontFaceCss = `
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap');
 @font-face {
   font-family: "Young";
   src: url("${staticFile('assets/fonts/young/Young-Typeface.otf')}") format("opentype");
@@ -32,7 +33,7 @@ export const fontFaceCss = `
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 `;
-export const FONT = '"Young", serif';
+export const FONT = '"Young", "Be Vietnam Pro", sans-serif';
 
 // ─── COLOR TOKENS ─────────────────────────────────────────────────────────────
 export const C = {
@@ -482,4 +483,15 @@ export const ArrowCTA: React.FC<{ label?: string; color?: string; bg?: string }>
     </div>
     {label && <div style={{ fontSize: 44, fontWeight: 900, color: bg }}>{label}</div>}
   </div>
+);
+
+// ─── HIGHLIGHT (KEY word accent) ─────────────────────────────────────────────
+/**
+ * Wrap KEY words with accent color so they pop against surrounding text.
+ * Usage: <Highlight color={C.goldBright}>Fed</Highlight>
+ */
+export const Highlight: React.FC<{ children: React.ReactNode; color?: string; bold?: boolean }> = ({
+  children, color = C.goldBright, bold = true,
+}) => (
+  <span style={{ color, fontWeight: bold ? 900 : undefined }}>{children}</span>
 );

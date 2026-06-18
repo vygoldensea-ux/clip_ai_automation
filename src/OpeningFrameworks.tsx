@@ -270,27 +270,33 @@ export const BABTransformationOpening: React.FC<{
       {/* Bridge statement */}
       {bridge && (
         <div style={{
-          position: 'absolute', left: 60, right: 60, top: 680,
+          position: 'absolute', left: 60, right: 60, top: 660,
           fontSize: 52, fontWeight: 900, color: C.white, lineHeight: 1.2,
-          fontFamily: FONT, textAlign: 'center',
+          fontFamily: '"Be Vietnam Pro", sans-serif', textAlign: 'center',
           ...anim.fadeUp(frame, startFrame + 40, 22),
         }}>
           {bridge}
         </div>
       )}
 
-      {/* Metrics */}
+      {/* Metrics — stretch to bottom */}
       {metrics.length > 0 && (
-        <div style={{ position: 'absolute', left: 60, right: 60, bottom: 140, display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+        <div style={{
+          position: 'absolute', left: 60, right: 60,
+          top: bridge ? 820 : 700,
+          bottom: 80,
+          display: 'flex', gap: 16,
+        }}>
           {metrics.map((m, i) => (
             <div key={i} style={{
-              flex: 1, minWidth: 180,
-              background: 'rgba(255,255,255,0.06)', borderRadius: 18, padding: '18px 22px',
+              flex: 1,
+              background: 'rgba(255,255,255,0.06)', borderRadius: 18, padding: '24px 22px',
               fontFamily: FONT,
+              display: 'flex', flexDirection: 'column', justifyContent: 'center',
               ...anim.fadeUp(frame, anim.stagger(i, startFrame + 60, 12)),
             }}>
-              <div style={{ fontSize: 48, fontWeight: 900, color: m.positive !== false ? C.neonLime : C.coral }}>{m.delta}</div>
-              <div style={{ fontSize: 24, color: 'rgba(255,255,255,0.55)', marginTop: 4 }}>{m.label}</div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: m.positive !== false ? C.neonLime : C.coral, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{m.delta}</div>
+              <div style={{ fontSize: 24, color: 'rgba(255,255,255,0.55)', marginTop: 6, fontFamily: '"Be Vietnam Pro", sans-serif', lineHeight: 1.3 }}>{m.label}</div>
             </div>
           ))}
         </div>
@@ -344,47 +350,49 @@ export const FormulaCardsOpening: React.FC<{
 
       <AccentLine color={C.goldBright} width={50} style={{ position: 'absolute', left: 60, top: formula ? 450 : 370 }} />
 
-      {/* Cards */}
+      {/* Cards + selector — fill lower 2/3 of screen evenly */}
       <div style={{
-        position: 'absolute', left: 60, right: 60, top: formula ? 490 : 430,
-        display: 'flex', flexDirection: 'column', gap: 16,
+        position: 'absolute', left: 60, right: 60,
+        top: formula ? 480 : 420,
+        bottom: 80,
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
       }}>
-        {cards.slice(0, 5).map((card, i) => {
-          const acc = card.accent || accents[i % accents.length];
-          return (
-            <div key={i} style={{
-              borderRadius: 20, padding: '20px 26px',
-              background: `${acc}18`, border: `2px solid ${acc}44`,
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              fontFamily: FONT,
-              ...anim.slideRight(frame, anim.stagger(i, startFrame + 30, 10)),
-            }}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: C.cream }}>{card.title}</div>
-              <div style={{ fontSize: 24, color: acc, fontWeight: 700, maxWidth: 380, textAlign: 'right' }}>{card.tagline}</div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Selector row */}
-      {selectorRow.length > 0 && (
-        <div style={{
-          position: 'absolute', left: 60, right: 60, bottom: 120,
-          display: 'flex', gap: 12, flexWrap: 'wrap',
-          ...anim.fadeUp(frame, startFrame + 90, 20),
-        }}>
-          {selectorRow.map((tag, i) => (
-            <div key={i} style={{
-              background: i === 0 ? C.goldBright : 'rgba(255,255,255,0.1)',
-              color: i === 0 ? C.black : C.cream,
-              fontSize: 24, fontWeight: 800, borderRadius: 100,
-              padding: '8px 22px', fontFamily: FONT,
-            }}>
-              {tag}
-            </div>
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
+          {cards.slice(0, 5).map((card, i) => {
+            const acc = card.accent || accents[i % accents.length];
+            return (
+              <div key={i} style={{
+                borderRadius: 20, padding: '22px 26px',
+                background: `${acc}18`, border: `2px solid ${acc}44`,
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                fontFamily: FONT, flex: 1,
+                ...anim.slideRight(frame, anim.stagger(i, startFrame + 30, 10)),
+              }}>
+                <div style={{ fontSize: 34, fontWeight: 900, color: C.cream, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{card.title}</div>
+                <div style={{ fontSize: 24, color: acc, fontWeight: 700, maxWidth: 380, textAlign: 'right', fontFamily: '"Be Vietnam Pro", sans-serif' }}>{card.tagline}</div>
+              </div>
+            );
+          })}
         </div>
-      )}
+
+        {selectorRow.length > 0 && (
+          <div style={{
+            display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 20,
+            ...anim.fadeUp(frame, startFrame + 90, 20),
+          }}>
+            {selectorRow.map((tag, i) => (
+              <div key={i} style={{
+                background: i === 0 ? C.goldBright : 'rgba(255,255,255,0.1)',
+                color: i === 0 ? C.black : C.cream,
+                fontSize: 24, fontWeight: 800, borderRadius: 100,
+                padding: '8px 22px', fontFamily: '"Be Vietnam Pro", sans-serif',
+              }}>
+                {tag}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </Scene>
   );
 };
@@ -568,34 +576,57 @@ export const PASPressureOpening: React.FC<{
         </div>
       )}
 
-      {/* Tension curve SVG */}
-      <div style={{ position: 'absolute', left: 60, right: 60, top: tensionStat ? 440 : 200, ...anim.fadeUp(frame, startFrame + 20) }}>
-        <svg width="960" height="120" viewBox="0 0 960 120" fill="none">
-          <defs>
-            <linearGradient id="tensionGrad" x1="0" y1="0" x2="960" y2="0">
-              <stop offset="0%" stopColor={C.coral} />
-              <stop offset="50%" stopColor={C.bubblegum} />
-              <stop offset="100%" stopColor={C.neonLime} />
-            </linearGradient>
-          </defs>
-          <path d="M 0 90 Q 240 100 480 50 Q 720 10 960 30" stroke="url(#tensionGrad)" strokeWidth="5" fill="none" strokeLinecap="round" />
-          <circle cx="0"   cy="90" r="8" fill={C.coral} />
-          <circle cx="480" cy="50" r="8" fill={C.bubblegum} />
-          <circle cx="960" cy="30" r="8" fill={C.neonLime} />
-        </svg>
-      </div>
+      {/* Tension curve SVG — animated draw via strokeDashoffset */}
+      {(() => {
+        const pathLen = 1020;
+        const drawProgress = interpolate(frame, [startFrame + 20, startFrame + 70], [0, 1], clamp);
+        const drawn = drawProgress * pathLen;
+        const p1Show = interpolate(frame, [startFrame + 20, startFrame + 28], [0, 1], clamp);
+        const p2Show = interpolate(frame, [startFrame + 45, startFrame + 52], [0, 1], clamp);
+        const p3Show = interpolate(frame, [startFrame + 65, startFrame + 72], [0, 1], clamp);
+        return (
+          <div style={{ position: 'absolute', left: 60, right: 60, top: tensionStat ? 420 : 200 }}>
+            <svg width="960" height="120" viewBox="0 0 960 120" fill="none">
+              <defs>
+                <linearGradient id="tensionGrad" x1="0" y1="0" x2="960" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor={C.coral} />
+                  <stop offset="50%" stopColor={C.bubblegum} />
+                  <stop offset="100%" stopColor={C.neonLime} />
+                </linearGradient>
+              </defs>
+              <path
+                d="M 0 90 Q 240 100 480 50 Q 720 10 960 30"
+                stroke="url(#tensionGrad)"
+                strokeWidth="5"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray={`${pathLen}`}
+                strokeDashoffset={`${pathLen - drawn}`}
+              />
+              <circle cx="0"   cy="90" r={8 * p1Show} fill={C.coral}     opacity={p1Show} />
+              <circle cx="480" cy="50" r={8 * p2Show} fill={C.bubblegum} opacity={p2Show} />
+              <circle cx="960" cy="30" r={8 * p3Show} fill={C.neonLime}  opacity={p3Show} />
+            </svg>
+          </div>
+        );
+      })()}
 
-      {/* PAS Cards */}
-      <div style={{ position: 'absolute', left: 60, right: 60, top: tensionStat ? 590 : 380, display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* PAS Cards — distribute evenly in lower half */}
+      <div style={{
+        position: 'absolute', left: 60, right: 60,
+        top: tensionStat ? 570 : 360,
+        bottom: 80,
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      }}>
         {cards.map((card, i) => (
           <div key={i} style={{
-            borderRadius: 20, padding: '22px 26px',
+            borderRadius: 20, padding: '26px 26px',
             background: card.bg, border: `2px solid ${card.color}44`,
             fontFamily: FONT,
             ...anim.slideRight(frame, anim.stagger(i, startFrame + 35, 14)),
           }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: card.color, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>{card.label}</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: C.white, lineHeight: 1.3 }}>{card.text}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: card.color, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>{card.label}</div>
+            <div style={{ fontSize: 30, fontWeight: 700, color: C.white, lineHeight: 1.35, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{card.text}</div>
           </div>
         ))}
       </div>
@@ -652,26 +683,31 @@ export const MarketUpdateOpening: React.FC<{
         </div>
         <div style={{
           fontSize: 34, color: 'rgba(255,247,237,0.65)', fontWeight: 600, marginTop: 8,
+          fontFamily: '"Be Vietnam Pro", sans-serif',
           ...anim.fadeUp(frame, startFrame + 22, 18),
         }}>
           {hookLabel}
         </div>
       </div>
 
-      {/* Signal cards */}
-      <div style={{ position: 'absolute', left: 60, right: 60, top: 680, display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* Signal cards — anchored to bottom, evenly spaced */}
+      <div style={{
+        position: 'absolute', left: 60, right: 60,
+        top: 580, bottom: source ? 130 : 80,
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      }}>
         {signals.slice(0, 3).map((sig, i) => {
           const positive = sig.positive !== false;
           const changeColor = positive ? C.neonLime : C.coral;
           return (
             <div key={i} style={{
-              borderRadius: 20, padding: '20px 26px',
+              borderRadius: 20, padding: '24px 26px',
               background: 'rgba(255,255,255,0.07)', border: '1.5px solid rgba(255,255,255,0.1)',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               fontFamily: FONT,
               ...anim.slideRight(frame, anim.stagger(i, startFrame + 36, 12)),
             }}>
-              <div style={{ fontSize: 32, fontWeight: 800, color: C.cream }}>{sig.label}</div>
+              <div style={{ fontSize: 32, fontWeight: 800, color: C.cream, fontFamily: '"Be Vietnam Pro", sans-serif' }}>{sig.label}</div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: 36, fontWeight: 900, color: C.cream }}>{sig.value}</div>
                 {sig.change && <div style={{ fontSize: 22, fontWeight: 800, color: changeColor }}>{sig.change}</div>}
@@ -684,7 +720,7 @@ export const MarketUpdateOpening: React.FC<{
       {/* Source footer */}
       {source && (
         <div style={{
-          position: 'absolute', left: 60, bottom: 110, right: 60, fontFamily: FONT,
+          position: 'absolute', left: 60, bottom: 80, right: 60, fontFamily: FONT,
           fontSize: 22, color: 'rgba(255,247,237,0.35)', fontWeight: 600,
           ...anim.fadeUp(frame, startFrame + 80, 20),
         }}>
