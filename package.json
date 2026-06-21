@@ -8,7 +8,8 @@
     "render:luxury-news": "remotion render src/index.ts LuxuryNewsTemplate outputs/news-template/luxury-news-template-demo.mp4 --codec h264 --pixel-format yuv420p",
     "render:btc-strategy": "remotion render src/index.ts BTCStrategyUpdate outputs/btc-strategy-20260616/btc-strategy-update-40s.mp4 --codec h264 --pixel-format yuv420p",
     "render:gold-news": "remotion render src/index.ts GoldNewsClip outputs/gold-news-20260618/gold-news-40s.mp4 --codec h264 --pixel-format yuv420p",
-    "preview": "remotion preview src/index.ts"
+    "preview": "remotion preview src/index.ts",
+    "voice": "bash scripts/generate-voice.sh"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.379",
